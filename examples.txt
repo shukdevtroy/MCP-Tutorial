@@ -1,0 +1,30 @@
+Download all four and put them in a `notes/` folder next to `mcp_server.py` and `kb_assistant_mcp.py`. Each one is designed to test something specific:
+
+**1. Precise fact retrieval** — ask:
+> "What's the internal codename for the MCP chatbot project?"
+
+Correct answer: **Project Nightjar**. No free LLM would guess this — if it answers correctly, `search_notes` is genuinely working.
+
+**2. Numeric/specific detail retrieval** — ask:
+> "What GPU budget did we approve and what caching tech did we pick?"
+
+Correct answer: **$4,300** and **Redis**. This tests that retrieval pulls the right snippet, not a neighboring note.
+
+**3. Topic isolation** — ask:
+> "What ingredients go in the smoky chicken recipe?"
+
+Correct answer should list cardamom, smoked paprika, etc. — and should **not** bleed in project or meeting content. If the model starts talking about GPUs when asked about chicken, retrieval or top_k ranking is off.
+
+**4. Honesty on missing info** — ask:
+> "What's my confirmed travel date for the Bandarban trip?"
+
+The note explicitly says *no fixed dates yet* — a good answer says exactly that, not a fabricated date. This is the most important test: it tells you whether the system prompt's "don't make things up" instruction is actually holding.
+
+**5. Cross-note reasoning (harder)** — ask:
+> "List all the specific numbers mentioned across my notes."
+
+This should force multiple `search_notes`/`read_note` calls and gather from more than one file (14,200 comments, 0.87 F1, $4,300, 500g chicken, etc.) — good stress test of the tool-calling loop.
+
+**6. Re-index test** — while the app is running, drop a 5th note in with a new unique fact, ask the chatbot about it (it should say it doesn't know yet since the index is stale), then ask it to reindex (or restart the app) and ask again — it should now find it.
+
+For each answer, glance at the terminal running `kb_assistant_mcp.py` — you should see the MCP tool calls happening (add a quick `print(fn_name, fn_args)` in the loop if you want it more visible) so you can confirm *why* it got something right or wrong, not just that it did.

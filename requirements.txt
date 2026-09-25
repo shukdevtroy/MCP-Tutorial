@@ -1,0 +1,4 @@
+mcp==1.30.0
+gradio 
+requests 
+scikit-learn
