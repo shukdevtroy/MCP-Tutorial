@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MCP-Based Personal Knowledge Base Chatbot — A Beginner-Friendly Guide</title>
+<style>
+  @page { margin: 20mm 18mm 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: #232323;
+    font-size: 11.5pt;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { font-family: 'Helvetica Neue', Arial, sans-serif; color: #10243d; }
+  .cover h1 { font-family: 'Helvetica Neue', Arial, sans-serif; }
+  p { margin: 0.55em 0; text-align: justify; }
+
+  /* ---------- Cover Page ---------- */
+  .cover {
+    page-break-after: always;
+    text-align: center;
+    padding-top: 40mm;
+    height: 180mm;
+    background: linear-gradient(180deg, #0b3d61 0%, #0b3d61 4mm, #ffffff 4mm);
+  }
+  .cover .badge {
+    display: inline-block;
+    background: #eef4fa;
+    border: 1px solid #0b3d61;
+    color: #0b3d61;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 10.5pt;
+    letter-spacing: 1px;
+    margin-bottom: 18mm;
+  }
+  .cover h1 {
+    font-size: 30pt;
+    color: #0b3d61;
+    margin: 0 14mm 6mm 14mm;
+    line-height: 1.25;
+  }
+  .cover h2 {
+    font-size: 14pt;
+    font-weight: normal;
+    color: #444;
+    margin: 0 18mm 30mm 18mm;
+    font-style: italic;
+  }
+  .cover .meta {
+    font-family: Arial, sans-serif;
+    font-size: 10.5pt;
+    color: #666;
+    margin-top: 5mm;
+  }
+  .cover .filebox {
+    display: inline-block;
+    /* margin-top: 10mm; */
+    text-align: left;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    padding: 10px 22px;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5pt;
+    color: #444;
+  }
+
+  /* ---------- TOC ---------- */
+  .toc { page-break-after: always; }
+  .toc h1 { border-bottom: 3px solid #0b3d61; padding-bottom: 6px; }
+  .toc table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10.5pt; }
+  .toc td { padding: 3px 4px; vertical-align: top; }
+  .toc .partrow td { font-weight: bold; color: #0b3d61; padding-top: 10px; text-transform: uppercase; font-size: 9.5pt; letter-spacing: 0.5px; }
+  .toc .num { width: 26px; color: #0b3d61; font-weight: bold; }
+  html { scroll-behavior: smooth; }
+  .toc .tocrow { cursor: pointer; border-radius: 4px; transition: background-color 0.15s ease; }
+  .toc .tocrow:hover { background-color: #eef4fa; }
+  .toc .tocrow:hover td { color: #0b3d61; }
+  .toc .tocrow:active { background-color: #dcebf8; }
+  .chapter { scroll-margin-top: 16px; position: relative; }
+  .back-to-toc {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 9pt;
+    color: #0b3d61;
+    text-decoration: none;
+    border: 1px solid #cfe0ee;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #eef4fa;
+  }
+  .back-to-toc:hover { background: #dcebf8; }
+  @media print {
+    .back-to-toc { display: none; }
+  }
+
+  /* ---------- Chapters ---------- */
+  .chapter { page-break-before: always; }
+  h1.chaptitle {
+    font-size: 19pt;
+    color: #fff;
+    background: #0b3d61;
+    padding: 10px 14px;
+    margin: 0 0 10px 0;
+    border-radius: 4px;
+  }
+  h1.chaptitle span.chno { color: #9fd1ff; margin-right: 8px; }
+  h2 { font-size: 13.5pt; color: #0b3d61; border-bottom: 1.5px solid #cfe0ee; padding-bottom: 3px; margin-top: 22px; }
+  h3 { font-size: 12pt; color: #16466e; margin-top: 16px; }
+  .part-divider {
+    page-break-before: always;
+    text-align: center;
+    padding-top: 50mm;
+    height: 150mm;
+}
+  .part-divider .plabel { font-family: Arial, sans-serif; color: #9fd1ff; background:#0b3d61; display:inline-block; padding:6px 22px; border-radius:20px; font-size:11pt; letter-spacing:2px;}
+  .part-divider h1 { font-size: 26pt; color: #0b3d61; margin-top: 16px; }
+
+  /* ---------- Boxes ---------- */
+  .box { border-radius: 5px; padding: 10px 14px; margin: 12px 0; font-size: 10.8pt; }
+  .analogy { background: #fff7e6; border: 1px solid #f0c36d; }
+  .analogy .label { font-weight: bold; color: #8a5a00; font-family: Arial, sans-serif; }
+  .takeaway { background: #e9f6ec; border-left: 5px solid #2e8b46; }
+  .takeaway .label { font-weight: bold; color: #1f6b32; font-family: Arial, sans-serif; }
+  .tip { background: #eef4fb; border-left: 5px solid #2f6fb0; }
+  .tip .label { font-weight: bold; color: #1f5188; font-family: Arial, sans-serif; }
+  .warn { background: #fdecea; border-left: 5px solid #c0392b; }
+  .warn .label { font-weight: bold; color: #a3291b; font-family: Arial, sans-serif; }
+  .projectbox { background: #f2f0fb; border-left: 5px solid #6c4fc4; }
+  .projectbox .label { font-weight: bold; color: #4b3596; font-family: Arial, sans-serif; }
+
+  /* ---------- Code ---------- */
+  pre.code {
+    background: #1e1e1e;
+    color: #d8d8d8;
+    padding: 10px 12px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 9.3pt;
+    overflow-x: auto;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 10pt; }
+
+  /* ---------- Diagrams (ascii box drawings) ---------- */
+  pre.diagram {
+    background: #fbfbfb;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.25;
+    text-align: left;
+  }
+
+  /* ---------- Tables ---------- */
+  table.data { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10.3pt; }
+  table.data th { background: #0b3d61; color: #fff; text-align: left; padding: 6px 8px; font-family: Arial, sans-serif; font-size: 9.8pt;}
+  table.data td { border: 1px solid #ddd; padding: 6px 8px; vertical-align: top; }
+  table.data tr:nth-child(even) td { background: #f7f9fb; }
+
+  ul, ol { margin: 0.4em 0 0.4em 1.3em; }
+  li { margin: 0.2em 0; }
+
+  .filecard { border: 1px solid #d8d8d8; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+  .filecard .fname { background: #0b3d61; color: #fff; padding: 6px 10px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 10.5pt;}
+  .filecard .fbody { padding: 8px 12px; }
+
+  .glossary dt { font-weight: bold; color: #0b3d61; font-family: Arial, sans-serif; margin-top: 6px;}
+  .glossary dd { margin: 0 0 4px 0; }
+
+  .qa { margin: 8px 0; }
+  .qa .q { font-weight: bold; color: #16466e; }
+  .qa .a { margin-left: 10px; color: #333; }
+
+  .footer-note { font-size: 8.5pt; color: #999; text-align:center; margin-top: 30px;}
+</style>
+</head>
+<body>
+
+<!-- ======================= COVER ======================= -->
+<div class="cover">
+  <div class="badge">MCP &nbsp;·&nbsp; LLM TOOL CALLING &nbsp;·&nbsp; RAG-STYLE SEARCH</div>
+  <h1>MCP-Based Personal<br>Knowledge Base Chatbot</h1>
+  <h2>A Beginner-Friendly Guide to LLMs, MCP, Tool Calling,<br>and Knowledge-Based AI</h2>
+  <div class="filebox">
+    Project files covered in this guide:<br>
+    mcp_server.py&nbsp;&nbsp;·&nbsp;&nbsp;kb_assistant_mcp.py&nbsp;&nbsp;·&nbsp;&nbsp;requirements.txt<br>
+    notes/meeting_notes_2026-09-10.md&nbsp;&nbsp;·&nbsp;&nbsp;notes/project_ideas.md<br>
+    notes/recipe_notebook.md&nbsp;&nbsp;·&nbsp;&nbsp;notes/travel_plans.md
+  </div>
+  <div class="meta">Classroom Edition &nbsp;|&nbsp; Suitable for Lab Sessions, Self-Study and Viva Preparation</div>
+</div>
+
+<!-- ======================= TOC ======================= -->
+<div class="toc" id="toc-top">
+<h1>Table of Contents</h1>
+<table>
+  <tr class="partrow"><td colspan="2">Part I — Foundations</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-1';"><td class="num">1</td><td>The Big Idea: A Simple Analogy First</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-2';"><td class="num">2</td><td>What Is This Project?</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-3';"><td class="num">3</td><td>Complete System Architecture</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-4';"><td class="num">4</td><td>What Is an LLM? (and OpenRouter's Role)</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-5';"><td class="num">5</td><td>What Is MCP?</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-6';"><td class="num">6</td><td>MCP Client vs. MCP Server</td></tr>
+
+  <tr class="partrow"><td colspan="2">Part II — Inside the MCP Server</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-7';"><td class="num">7</td><td>The MCP Server: mcp_server.py</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-8';"><td class="num">8</td><td>Tool Discovery: How the LLM Learns What Tools Exist</td></tr>
+
+  <tr class="partrow"><td colspan="2">Part III — Inside the MCP Client</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-9';"><td class="num">9</td><td>The MCP Client: kb_assistant_mcp.py</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-10';"><td class="num">10</td><td>The Async Architecture (Why a Background Event Loop?)</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-11';"><td class="num">11</td><td>Step-by-Step: How the Chatbot Answers a Question</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-12';"><td class="num">12</td><td>The System Prompt and Grounded Generation</td></tr>
+
+  <tr class="partrow"><td colspan="2">Part IV — The Search Engine</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-13';"><td class="num">13</td><td>What Is TF-IDF?</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-14';"><td class="num">14</td><td>What Is Cosine Similarity?</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-15';"><td class="num">15</td><td>The Knowledge Base: Markdown Notes</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-16';"><td class="num">16</td><td>The In-Memory Cache and Index</td></tr>
+
+  <tr class="partrow"><td colspan="2">Part V — Robustness, UI and Security</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-17';"><td class="num">17</td><td>Error Handling in This Project</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-18';"><td class="num">18</td><td>The Gradio User Interface</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-19';"><td class="num">19</td><td>API Keys and Security</td></tr>
+
+  <tr class="partrow"><td colspan="2">Part VI — Reference</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-20';"><td class="num">20</td><td>Understanding Every Important File</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-21';"><td class="num">21</td><td>Dependencies Explained</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-22';"><td class="num">22</td><td>Installation and Running Guide</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-23';"><td class="num">23</td><td>Example Questions Students Can Ask</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-24';"><td class="num">24</td><td>search_notes vs. read_note</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-25';"><td class="num">25</td><td>Reindexing the Knowledge Base</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-26';"><td class="num">26</td><td>Limitations of This Project</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-27';"><td class="num">27</td><td>MCP vs. Direct Function Calling</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-28';"><td class="num">28</td><td>Security and Prompt Injection</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-29';"><td class="num">29</td><td>Possible Future Improvements</td></tr>
+
+  <tr class="partrow"><td colspan="2">Part VII — Study Aids</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-30';"><td class="num">30</td><td>Viva Questions and Answers</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-31';"><td class="num">31</td><td>Student Exercises</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-32';"><td class="num">32</td><td>Glossary</td></tr>
+  <tr class="tocrow" onclick="location.hash='chapter-33';"><td class="num">33</td><td>The Whole Project in One Picture</td></tr>
+</table>
+</div>
+
+<!-- ======================= PART I DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART I</div>
+  <h1>Foundations</h1>
+</div>
+
+<!-- ======================= CH 1 ======================= -->
+<div class="chapter" id="chapter-1">
+<h1 class="chaptitle"><span class="chno">1</span>The Big Idea: A Simple Analogy First</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>Before touching any code, let's build a mental picture using something everyone already understands: a student with a personal assistant.</p>
+
+<div class="box analogy">
+<span class="label">ANALOGY —</span> Imagine you keep all your personal notes on paper, in a drawer. You hire an assistant who is brilliant at conversation but has never opened your drawer. Whenever you ask a question about your notes, your assistant calls the office's "service desk," which is the only one allowed to open the drawer. The service desk searches through the papers, hands back the relevant ones, and your assistant reads them and answers you in plain language.
+</div>
+
+<table class="data">
+<tr><th>Analogy Role</th><th>Real Component</th></tr>
+<tr><td>The Brain (understands language, decides what to ask for)</td><td>The LLM (large language model)</td></tr>
+<tr><td>The Messenger / Coordinator</td><td>The MCP Client</td></tr>
+<tr><td>The Service Desk</td><td>The MCP Server</td></tr>
+<tr><td>Services the desk offers</td><td>MCP Tools (<code>search_notes</code>, <code>read_note</code>, <code>reindex_notes</code>)</td></tr>
+<tr><td>The Drawer of Papers</td><td>The Markdown notes in <code>notes/</code></td></tr>
+<tr><td>The Librarian who finds relevant papers fast</td><td>TF-IDF search + cosine similarity</td></tr>
+<tr><td>The Chat Window you talk through</td><td>Gradio</td></tr>
+<tr><td>The Phone Line to reach the Brain</td><td>OpenRouter (the API gateway to the LLM)</td></tr>
+</table>
+
+<div class="box tip"><span class="label">Student Tip —</span> This table is a teaching shortcut, not a literal technical definition. Keep it in mind as a map while we go chapter by chapter — every technical term you meet later can be traced back to one of these rows.</div>
+</div>
+
+<!-- ======================= CH 2 ======================= -->
+<div class="chapter" id="chapter-2">
+<h1 class="chaptitle"><span class="chno">2</span>What Is This Project?</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>This project is a <b>Personal Knowledge Base Chatbot</b>. It lets a user chat, in plain English, with their own collection of personal Markdown notes. Instead of manually searching files, the user simply asks a question, and the chatbot finds the right notes and answers using them.</p>
+
+<div class="box projectbox">
+<span class="label">In This Project —</span> The knowledge base is a folder called <code>notes/</code> containing four real Markdown files:
+<ul>
+<li><code>meeting_notes_2026-09-10.md</code> — decisions and action items from a work meeting</li>
+<li><code>project_ideas.md</code> — a list of software project ideas, including this very chatbot ("Project Nightjar")</li>
+<li><code>recipe_notebook.md</code> — a cooking recipe with ingredients and notes</li>
+<li><code>travel_plans.md</code> — notes about an upcoming trip</li>
+</ul>
+</div>
+
+<h2>Why isn't an LLM alone enough?</h2>
+<p>A plain LLM only knows what it was trained on. It has never seen this user's personal notes, and it cannot browse the user's computer by itself. If you asked a plain LLM "what did we decide about the cache?", it could only guess — and guessing about someone's private life or work decisions is exactly the kind of "making things up" (hallucination) that makes chatbots unreliable.</p>
+
+<h2>Why are tools required?</h2>
+<p>To answer correctly, the LLM needs a way to <i>reach out</i> and read real data. A "tool" is simply a function the LLM is allowed to call — for example, "search my notes for X." The LLM decides <i>when</i> to call a tool and <i>what</i> to search for; the actual searching is done by ordinary Python code, not by the LLM's imagination.</p>
+
+<h2>Why MCP specifically?</h2>
+<p>MCP (Model Context Protocol) is simply a standard, agreed-upon way for an AI application to talk to a tool provider. Instead of writing one-off, custom glue code for every project, this project uses MCP so that the "tool provider" (the note-search service) is a separate, swappable, standardized component.</p>
+
+<h2>Why store notes as Markdown?</h2>
+<p>Markdown files are plain text, human-readable, easy to edit in any text editor, and require no database setup. That makes them a natural fit for a lightweight personal knowledge base that a single student or hobbyist can maintain by hand.</p>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> This project is not a general-purpose chatbot. It is a chatbot deliberately restricted to answering from the user's own notes, using tools to fetch real content instead of guessing.</div>
+</div>
+
+<!-- ======================= CH 3 ======================= -->
+<div class="chapter" id="chapter-3">
+<h1 class="chaptitle"><span class="chno">3</span>Complete System Architecture</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>Here is the actual flow of data in this project, verified directly against the code in <code>mcp_server.py</code> and <code>kb_assistant_mcp.py</code>:</p>
+
+<pre class="diagram">
+                         ┌─────────────────────┐
+                         │        USER         │
+                         └──────────┬──────────┘
+                                    │ types a question
+                                    ▼
+                    ┌─────────────────────────────────┐
+                    │  Gradio UI  (gr.ChatInterface)  │
+                    │  in kb_assistant_mcp.py         │
+                    └───────────────┬─────────────────┘
+                                    │ chat_fn(message, history, api_key)
+                                    ▼
+                    ┌─────────────────────────────────┐
+                    │  run_tool_calling_loop()        │
+                    │  (MCP CLIENT logic)             │
+                    └───────┬─────────────────┬───────┘
+                            │                 │
+            HTTPS POST      │                 │ stdio (stdin/stdout)
+          (OpenRouter API)  │                 │  via ClientSession
+                            ▼                 ▼
+              ┌───────────────────┐   ┌───────────────────────────┐
+              │  OpenRouter LLM   │   │   mcp_server.py           │
+              │  call_openrouter()│   │   (MCP SERVER, subprocess)│
+              └───────────────────┘   └─────────────┬─────────────┘
+                                                    │
+                                    ┌───────────────┼────────────────┐
+                                    ▼               ▼                ▼
+                             search_notes()   read_note()     reindex_notes()
+                                    │               │
+                                    └───────┬───────┘
+                                            ▼
+                                   ┌────────────────────┐
+                                   │  notes/*.md files  │
+                                   │  (_notes_cache)    │
+                                   └────────┬───────────┘
+                                            ▼
+                                 ┌───────────────────────────┐
+                                 │ TfidfVectorizer +         │
+                                 │ cosine_similarity()       │
+                                 │ (_vectorizer, _doc_matrix)│
+                                 └───────────────────────────┘
+</pre>
+
+<h2>Explaining every arrow</h2>
+<ul>
+<li><b>User → Gradio UI:</b> the user types a message into the chat box built with <code>gr.ChatInterface</code>.</li>
+<li><b>Gradio UI → run_tool_calling_loop():</b> Gradio calls <code>chat_fn()</code>, which builds a list of OpenAI-style <code>messages</code> and hands them to the tool-calling loop.</li>
+<li><b>run_tool_calling_loop() → OpenRouter:</b> the loop sends the conversation, plus the schema of the discovered MCP tools, to OpenRouter over a normal HTTPS request via <code>call_openrouter()</code>.</li>
+<li><b>run_tool_calling_loop() → mcp_server.py:</b> when the LLM's reply contains a tool call, the client sends that call to the already-running <code>mcp_server.py</code> subprocess over <b>stdio</b> (standard input/output), using the MCP <code>ClientSession</code>.</li>
+<li><b>mcp_server.py → tools:</b> the server routes the request to the matching Python function — <code>search_notes</code>, <code>read_note</code>, or <code>reindex_notes</code>.</li>
+<li><b>tools → notes/*.md:</b> <code>search_notes</code> and <code>read_note</code> read from <code>_notes_cache</code>, which is loaded from the Markdown files.</li>
+<li><b>tools → TF-IDF engine:</b> <code>search_notes</code> converts the query and the notes into numeric vectors and ranks them by <code>cosine_similarity</code>.</li>
+<li><b>Result flows back up</b> the same path: server → client → appended as a <code>"role": "tool"</code> message → sent back to OpenRouter → the LLM writes the final natural-language answer → Gradio displays it.</li>
+</ul>
+
+<div class="box tip"><span class="label">Student Tip —</span> Notice there are <i>two</i> separate network-style connections: an HTTPS call to OpenRouter (for the LLM's "thinking"), and a stdio pipe to the local <code>mcp_server.py</code> subprocess (for "doing"). Keeping these separate is central to the whole MCP idea.</div>
+</div>
+
+<!-- ======================= CH 4 ======================= -->
+<div class="chapter" id="chapter-4">
+<h1 class="chaptitle"><span class="chno">4</span>What Is an LLM? (and OpenRouter's Role)</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<h2>LLM basics</h2>
+<p>A <b>Large Language Model (LLM)</b> is a program trained on huge amounts of text that has learned statistical patterns of language well enough to generate coherent, relevant text in response to an input.</p>
+<ul>
+<li><b>Prompt</b> — the text you send the model, including instructions and context.</li>
+<li><b>Context</b> — everything the model can "see" at once: system instructions, chat history, and tool results.</li>
+<li><b>Token</b> — a chunk of text (roughly a word or part of a word) that the model reads and generates one piece at a time.</li>
+<li><b>Response</b> — the text (or structured tool call) the model produces.</li>
+</ul>
+
+<h2>Why can't an LLM access local files by itself?</h2>
+<p>An LLM is just a text-in, text-out function running on a remote server. It has no hands, no file system access, and no memory of this specific user's computer. The only way it can "see" the user's notes is if something else — the MCP client and server — fetches the content and hands it to the model as plain text inside the conversation.</p>
+
+<h2>OpenRouter's role in this project</h2>
+<p>OpenRouter is a hosted gateway that lets a program send chat requests to many different LLMs through one consistent API, without the project needing to manage its own GPU servers. In this project, OpenRouter is the "phone line" the client uses to reach the LLM.</p>
+
+<div class="box projectbox"><span class="label">In This Project —</span>
+<pre class="code">OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODEL_NAME = os.environ.get("KB_MODEL", "stealth/union-alpha")</pre>
+<code>OPENROUTER_URL</code> is the single HTTP endpoint used for every LLM call. <code>MODEL_NAME</code> picks which model OpenRouter should route the request to; it defaults to a specific model name but can be overridden with the <code>KB_MODEL</code> environment variable. The code comments note that not every free OpenRouter model reliably supports tool calling, so this choice matters.
+</div>
+
+<p>Now let's look at the actual function that talks to OpenRouter:</p>
+<pre class="code">def call_openrouter(messages, api_key):
+    if not api_key:
+        raise RuntimeError("Enter your OpenRouter API key in the box above first.")
+    resp = requests.post(
+        OPENROUTER_URL,
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        data=json.dumps({
+            "model": MODEL_NAME,
+            "messages": messages,
+            "tools": _mcp_tools_schema,
+        }),
+        timeout=60,
+    )
+    resp.raise_for_status()
+    return resp.json()</pre>
+
+<p>Line by line, in plain language:</p>
+<ul>
+<li><code>if not api_key: raise RuntimeError(...)</code> — refuses to call OpenRouter without a key, and tells the user exactly what to do.</li>
+<li><code>requests.post(OPENROUTER_URL, ...)</code> — sends an HTTPS POST request, the standard way to talk to a REST API.</li>
+<li><code>headers={"Authorization": f"Bearer {api_key}", ...}</code> — proves who is calling, using the key the user typed into the Gradio textbox.</li>
+<li><code>"model": MODEL_NAME</code> — tells OpenRouter which underlying LLM to route the request to.</li>
+<li><code>"messages": messages</code> — the entire conversation so far (system prompt, user turns, assistant turns, and any tool results).</li>
+<li><code>"tools": _mcp_tools_schema</code> — the list of tools the LLM is allowed to call, discovered from the MCP server (explained fully in Chapter 8). This single line is what makes tool calling possible: without it, the model has no idea <code>search_notes</code> exists.</li>
+<li><code>resp.raise_for_status()</code> — turns any HTTP error status into a Python exception, so failures aren't silently ignored.</li>
+</ul>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> OpenRouter never touches the notes directly. It only ever sees the conversation text and the tool schema — the actual file reading happens entirely inside <code>mcp_server.py</code>, on the user's own machine.</div>
+</div>
+
+<!-- ======================= CH 5 ======================= -->
+<div class="chapter" id="chapter-5">
+<h1 class="chaptitle"><span class="chno">5</span>What Is MCP?</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p><b>MCP</b> stands for <b>Model Context Protocol</b>. It is a standardized way for an AI application (like an LLM-powered chatbot) to connect to external tools and data sources.</p>
+
+<h2>The problem MCP solves</h2>
+<p>Before standards like MCP, every project that wanted an LLM to use "tools" had to invent its own custom wiring: its own way of describing tools, its own way of calling them, its own way of returning results. That made tools hard to reuse across projects. MCP fixes this by defining one common protocol: any MCP-compatible client can talk to any MCP-compatible server, regardless of who wrote either side.</p>
+
+<h2>Core MCP vocabulary</h2>
+<ul>
+<li><b>MCP Server</b> — a small program that exposes a set of "tools" (and optionally other resources) following the MCP specification.</li>
+<li><b>MCP Client</b> — the program that connects to an MCP server, asks what tools are available, and calls them on behalf of the AI application.</li>
+<li><b>MCP Tool</b> — a single callable capability, with a name, a description, and a defined set of input parameters.</li>
+<li><b>MCP Protocol</b> — the message format and rules both sides follow so they always understand each other, regardless of implementation language.</li>
+<li><b>stdio transport</b> — one way for the client and server to exchange MCP messages: by writing to and reading from each other's standard input/output streams, typically because the server runs as a local subprocess.</li>
+</ul>
+
+<div class="box analogy"><span class="label">Simple Example —</span> Think of MCP like a restaurant menu format that every restaurant in a city agrees to use. A delivery app (the "client") doesn't need custom code for every single restaurant ("server") — it just reads each restaurant's menu in the same standard format and places orders the same standard way.</div>
+
+<div class="box projectbox"><span class="label">In This Project —</span> <code>mcp_server.py</code> is the MCP server; it exposes three tools. <code>kb_assistant_mcp.py</code> is the MCP client; it connects to that server over <b>stdio</b>, because the server is launched as a local subprocess on the same machine rather than reached over a network.</div>
+</div>
+
+<!-- ======================= CH 6 ======================= -->
+<div class="chapter" id="chapter-6">
+<h1 class="chaptitle"><span class="chno">6</span>MCP Client vs. MCP Server</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>Beginners very often mix up "client" and "server." This table should make the distinction permanent.</p>
+
+<table class="data">
+<tr><th>Component</th><th>What It Does</th><th>In This Project</th></tr>
+<tr><td><b>MCP Client</b></td><td>Initiates the connection; asks the server what tools exist; sends tool-call requests; receives results and hands them back to the LLM/application logic.</td><td><code>kb_assistant_mcp.py</code> — specifically the connection and tool-calling logic (<code>_connect()</code>, <code>call_mcp_tool()</code>, <code>run_tool_calling_loop()</code>).</td></tr>
+<tr><td><b>MCP Server</b></td><td>Listens for requests from a client; advertises its available tools; executes the requested tool's actual logic; returns results.</td><td><code>mcp_server.py</code> — built with <code>FastMCP</code>, run as a subprocess and driven entirely over stdio.</td></tr>
+<tr><td><b>MCP Tool</b></td><td>One specific capability a server offers, with a name, description, and parameters that the client (and ultimately the LLM) can see and call.</td><td><code>search_notes</code>, <code>read_note</code>, <code>reindex_notes</code>.</td></tr>
+</table>
+
+<div class="box tip"><span class="label">Student Tip —</span> A simple rule of thumb: the <b>server owns the data and the logic</b> (it knows how to search notes); the <b>client owns the conversation</b> (it knows how to talk to the user and the LLM, and it asks the server to do work on its behalf). In this project the client and server run on the same laptop, but MCP is designed so a server could just as easily run on a completely different machine.</div>
+</div>
+
+<!-- ======================= PART II DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART II</div>
+  <h1>Inside the<br>MCP Server</h1>
+</div>
+
+<!-- ======================= CH 7 ======================= -->
+<div class="chapter" id="chapter-7">
+<h1 class="chaptitle"><span class="chno">7</span>The MCP Server: mcp_server.py</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<h2>Setting up FastMCP</h2>
+<pre class="code">from mcp.server.fastmcp import FastMCP
+mcp = FastMCP("kb-notes")</pre>
+<p><code>FastMCP</code> is a helper class from the official MCP Python SDK that takes care of the MCP protocol details — message formatting, the stdio transport loop, and advertising tools to a connecting client — so the project author only has to write ordinary Python functions and mark them as tools. <code>FastMCP("kb-notes")</code> creates a server instance and gives it the name <code>"kb-notes"</code>.</p>
+
+<h2>The three tools</h2>
+
+<h3>search_notes(query, top_k)</h3>
+<pre class="code">@mcp.tool()
+def search_notes(query: str, top_k: int = 3) -> str:
+    """Search the user's personal notes and return the most relevant snippets."""
+    ...
+    query_vec = _vectorizer.transform([query])
+    scores = cosine_similarity(query_vec, _doc_matrix).flatten()
+    ranked = sorted(zip(_filenames, scores), key=lambda x: x[1], reverse=True)
+    ...
+    return json.dumps(results)</pre>
+<ul>
+<li><b>Purpose:</b> find which notes are most relevant to a question.</li>
+<li><b>Input:</b> <code>query</code> (the search text) and <code>top_k</code> (how many results to return, defaulting to 3).</li>
+<li><b>How it works:</b> the query is turned into a TF-IDF vector, compared against every note's vector using cosine similarity, and the notes are sorted best-match first.</li>
+<li><b>Output:</b> a JSON string — a list of objects, each with <code>filename</code>, a rounded <code>relevance_score</code>, and a 500-character <code>snippet</code> of the note. Notes scoring 0 (no overlap at all) are skipped, and if nothing scores above 0, the tool returns an informational message instead of an empty list.</li>
+</ul>
+
+<h3>read_note(filename)</h3>
+<pre class="code">@mcp.tool()
+def read_note(filename: str) -> str:
+    """Read the full content of one specific note by its exact filename."""
+    content = _notes_cache.get(filename)
+    if content is None:
+        return json.dumps({"error": f"Note '{filename}' not found. ..."})
+    return json.dumps({"filename": filename, "content": content})</pre>
+<ul>
+<li><b>Why it exists:</b> <code>search_notes</code> only returns short 500-character snippets to keep results compact. If the LLM needs the <i>full</i> content of one specific note, it calls <code>read_note</code> with the exact filename returned by <code>search_notes</code>.</li>
+<li><b>What happens if the file doesn't exist:</b> the function returns a JSON error object explaining the note wasn't found, rather than raising an exception that would crash the tool call.</li>
+</ul>
+
+<h3>reindex_notes()</h3>
+<pre class="code">@mcp.tool()
+def reindex_notes() -> str:
+    """Re-scan NOTES_DIR and rebuild the search index (call after adding/editing notes)."""
+    build_index()
+    return json.dumps({"status": "ok", "notes_indexed": len(_filenames)})</pre>
+<ul>
+<li><b>Why an index needs rebuilding:</b> the TF-IDF index is a snapshot computed once (when the server starts). If notes are added or changed on disk afterward, the snapshot goes stale — new content won't be searchable until the index is rebuilt.</li>
+<li><b>What it does:</b> simply calls <code>build_index()</code> again, which reloads every Markdown file from disk and recomputes the TF-IDF vectors, then reports how many notes are now indexed.</li>
+</ul>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> All three tools return <b>strings containing JSON</b>, not raw JSON objects. This matters because MCP tool results, and the OpenAI-style "tool" messages that carry them, are transmitted as text.</div>
+</div>
+
+<!-- ======================= CH 8 ======================= -->
+<div class="chapter" id="chapter-8">
+<h1 class="chaptitle"><span class="chno">8</span>Tool Discovery: How the LLM Learns What Tools Exist</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<h2>What a decorator is</h2>
+<p>In Python, a <b>decorator</b> is a piece of syntax (<code>@something</code>) placed above a function that wraps or registers that function with extra behavior, without you having to rewrite the function itself.</p>
+<pre class="code">@mcp.tool()
+def search_notes(query: str, top_k: int = 3) -> str:
+    """Search the user's personal notes and return the most relevant snippets.
+
+    Args:
+        query: search text
+        top_k: number of results to return (default 3)
+    """</pre>
+<p><code>@mcp.tool()</code> tells the <code>FastMCP</code> instance: "register this ordinary Python function as an MCP tool." Behind the scenes, <code>FastMCP</code> reads the function's name, its docstring (used as the tool <b>description</b>), and its type-hinted parameters (used to build the tool's input <b>schema</b>) — turning a plain Python function into something an MCP client can discover and call remotely.</p>
+
+<h2>The client asking "what tools exist?"</h2>
+<pre class="code">tools_result = await session.list_tools()</pre>
+<p>Instead of the client author manually typing out a list of tool names and parameters (which would break the moment the server changes), the client asks the server directly, at connection time, "what tools do you have?" This is <b>tool discovery</b>. The server answers with the live list of everything currently decorated with <code>@mcp.tool()</code> — including each tool's name, description, and parameter schema.</p>
+
+<h2>Converting MCP tools into an OpenAI-style schema</h2>
+<pre class="code">def _mcp_tools_to_openai_schema(tools):
+    schema = []
+    for t in tools:
+        schema.append({
+            "type": "function",
+            "function": {
+                "name": t.name,
+                "description": t.description or "",
+                "parameters": t.inputSchema,
+            },
+        })
+    return schema</pre>
+<p>MCP describes tools its own way, but OpenRouter (like the OpenAI API it mirrors) expects tools described in a specific JSON shape called the <b>tools</b> / <b>function-calling</b> schema. This function is a translator: for every MCP tool discovered, it builds a matching entry with <code>type: "function"</code>, the tool's name, description, and parameter schema — producing exactly the list that later gets attached as <code>"tools": _mcp_tools_schema</code> inside <code>call_openrouter()</code>.</p>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> The LLM never reads Python source code. It only ever sees the name/description/parameter schema produced by this discovery-and-translation chain — which is exactly why writing a clear docstring on a tool function matters: that docstring is literally what tells the LLM when and how to use the tool.</div>
+</div>
+
+<!-- ======================= PART III DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART III</div>
+  <h1>Inside the<br>MCP Client</h1>
+</div>
+
+<!-- ======================= CH 9 ======================= -->
+<div class="chapter" id="chapter-9">
+<h1 class="chaptitle"><span class="chno">9</span>The MCP Client: kb_assistant_mcp.py</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>The client's job is to launch the server, keep a connection open, discover its tools, and relay tool calls back and forth. Four building blocks from the official <code>mcp</code> SDK make this possible.</p>
+
+<table class="data">
+<tr><th>Building Block</th><th>Role</th></tr>
+<tr><td><code>StdioServerParameters</code></td><td>Describes <i>how</i> to launch the server subprocess — which command and arguments to run.</td></tr>
+<tr><td><code>stdio_client(...)</code></td><td>Actually starts that subprocess and gives back a readable/writable pair of streams connected to its stdin/stdout.</td></tr>
+<tr><td><code>ClientSession</code></td><td>Wraps those raw streams with the MCP protocol logic: sending requests, receiving responses, and matching them up.</td></tr>
+<tr><td><code>AsyncExitStack</code></td><td>A standard Python tool for safely managing several "context managers" (things that need clean setup and teardown) together, so the subprocess and session are properly closed if anything goes wrong.</td></tr>
+</table>
+
+<h2>Launching the server as a subprocess</h2>
+<pre class="code">server_params = StdioServerParameters(
+    command="python",
+    args=[SERVER_SCRIPT]
+)</pre>
+<div class="box projectbox"><span class="label">In This Project —</span> This tells the client: run the command <code>python mcp_server.py</code> (where <code>SERVER_SCRIPT</code> is the full path to that file) as a brand-new child process. Once started, the client does not talk to it over the network — it talks to it by writing MCP-protocol messages to that subprocess's standard input, and reading its replies from standard output. This is exactly what "stdio transport" means in practice: the operating system's own input/output pipes become the communication channel between two programs running side by side.</div>
+
+<h2>The connection sequence</h2>
+<pre class="code">stack = AsyncExitStack()
+read, write = await stack.enter_async_context(stdio_client(server_params))
+session = await stack.enter_async_context(ClientSession(read, write))
+await session.initialize()
+tools_result = await session.list_tools()</pre>
+<p>In order: start the subprocess and get its stdio streams; wrap those streams in a <code>ClientSession</code>; perform the MCP handshake with <code>initialize()</code>; then ask the server what tools it has, storing the answer (converted to OpenAI-style schema, see Chapter 8) for later use by every OpenRouter request.</p>
+</div>
+
+<!-- ======================= CH 10 ======================= -->
+<div class="chapter" id="chapter-10">
+<h1 class="chaptitle"><span class="chno">10</span>The Async Architecture (Why a Background Event Loop?)</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<h2>The problem being solved</h2>
+<p>The MCP client library is <b>asynchronous</b> — its functions are written with <code>async</code>/<code>await</code> and must run inside an <code>asyncio</code> event loop. But <b>Gradio's callback functions are synchronous</b> — plain, ordinary functions that Gradio calls directly and expects a normal return value from. This is a mismatch: synchronous code cannot simply call <code>await</code> on an async function.</p>
+
+<h2>The project's solution</h2>
+<pre class="code">_loop = asyncio.new_event_loop()
+
+def _run_loop():
+    asyncio.set_event_loop(_loop)
+    _loop.run_forever()
+
+threading.Thread(target=_run_loop, daemon=True).start()</pre>
+<p>The project creates one dedicated <code>asyncio</code> event loop, and runs it forever inside a separate background <b>thread</b> (a daemon thread, meaning it won't block the program from exiting). This loop lives for the entire lifetime of the app and owns the one persistent connection to the MCP server.</p>
+
+<pre class="code">fut = asyncio.run_coroutine_threadsafe(_connect(), _loop)
+fut.result(timeout=30)</pre>
+<p><code>asyncio.run_coroutine_threadsafe()</code> is the bridge: it safely schedules an async coroutine (like <code>_connect()</code> or a tool call) to run on that background loop, <i>from</i> the synchronous Gradio callback thread, and lets the synchronous code wait for the result with <code>.result(timeout=...)</code>.</p>
+
+<pre class="diagram">
+   Gradio callback (synchronous)
+              │
+              ▼
+   Synchronous Python function  (chat_fn, run_tool_calling_loop)
+              │  asyncio.run_coroutine_threadsafe(...)
+              ▼
+   Background asyncio event loop   (running forever in a daemon thread)
+              │
+              ▼
+   MCP async ClientSession   (await session.call_tool(...))
+              │  stdio
+              ▼
+   mcp_server.py  (subprocess)
+</pre>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> This pattern — one background event loop in its own thread, bridged with <code>run_coroutine_threadsafe</code> — is a common way to use an async library from inside a synchronous framework like Gradio, without rewriting the whole application as async.</div>
+</div>
+
+<!-- ======================= CH 11 ======================= -->
+<div class="chapter" id="chapter-11">
+<h1 class="chaptitle"><span class="chno">11</span>Step-by-Step: How the Chatbot Answers a Question</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>Let's trace one concrete, realistic example end to end: the user asks <i>"What did we decide about the response cache?"</i> — a question the meeting notes can actually answer.</p>
+
+<div class="box warn"><span class="label">Note —</span> The exact number of tool calls the LLM chooses to make (and in what order) depends on the specific model's behavior. The steps below describe the <i>expected</i> flow that the code is designed to support, not a guarantee of exactly what any given model will do on every run.</div>
+
+<table class="data">
+<tr><th>#</th><th>Step</th><th>What Happens</th></tr>
+<tr><td>1</td><td>User input</td><td>The user types the question into the Gradio chat box.</td></tr>
+<tr><td>2</td><td><code>chat_fn()</code></td><td>Gradio calls <code>chat_fn(message, history, api_key)</code>.</td></tr>
+<tr><td>3</td><td>Build messages</td><td>The system prompt, prior turns from <code>history</code>, and the new user message are assembled into an OpenAI-style <code>messages</code> list.</td></tr>
+<tr><td>4</td><td>System prompt guides behavior</td><td>The system prompt instructs the model to search the notes before answering (Chapter 12).</td></tr>
+<tr><td>5</td><td>Tools attached</td><td><code>_mcp_tools_schema</code> (discovered earlier via <code>list_tools()</code>) is sent alongside the conversation.</td></tr>
+<tr><td>6</td><td>LLM requests a tool</td><td>OpenRouter's response includes a <code>tool_calls</code> entry — likely calling <code>search_notes</code> with something like <code>{"query": "response cache decision"}</code>.</td></tr>
+<tr><td>7</td><td>Client identifies the function</td><td><code>run_tool_calling_loop()</code> reads <code>call["function"]["name"]</code>.</td></tr>
+<tr><td>8</td><td>Client parses arguments</td><td><code>json.loads(call["function"]["arguments"])</code> turns the arguments string into a Python dict.</td></tr>
+<tr><td>9</td><td>MCP tool is called</td><td><code>call_mcp_tool(fn_name, fn_args)</code> is invoked, which ensures the session is connected and schedules the async tool call on the background loop.</td></tr>
+<tr><td>10</td><td>Server executes the tool</td><td><code>mcp_server.py</code> runs <code>search_notes("response cache decision", 3)</code>.</td></tr>
+<tr><td>11</td><td>TF-IDF/cosine similarity search</td><td>The query is vectorized and compared against every note; <code>meeting_notes_2026-09-10.md</code> should score highest since it mentions "Redis" and "response cache."</td></tr>
+<tr><td>12</td><td>Result returned to client</td><td>The JSON string of ranked results travels back over stdio to the client.</td></tr>
+<tr><td>13</td><td>Added as a tool message</td><td>The client appends <code>{"role": "tool", "tool_call_id": ..., "name": "search_notes", "content": result_text}</code> to <code>messages</code>.</td></tr>
+<tr><td>14</td><td>LLM receives the tool result</td><td>The loop calls <code>call_openrouter(messages, api_key)</code> again, now including the tool's output.</td></tr>
+<tr><td>15</td><td>Final answer generated</td><td>With no further tool calls needed, the model responds in plain language, e.g. mentioning the Redis decision and citing the filename.</td></tr>
+<tr><td>16</td><td>Displayed in Gradio</td><td><code>chat_fn()</code> returns that text, and <code>gr.ChatInterface</code> renders it in the chat window.</td></tr>
+</table>
+
+</div>
+
+<!-- ======================= CH 12 ======================= -->
+<div class="chapter" id="chapter-12">
+<h1 class="chaptitle"><span class="chno">12</span>The System Prompt and Grounded Generation</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<pre class="code">SYSTEM_PROMPT = (
+    "You are a helpful assistant that answers questions using ONLY the "
+    "user's personal notes. Always use the search_notes tool first to find "
+    "relevant notes before answering. If you need more detail from a "
+    "specific note, use read_note. If the notes don't contain the answer, "
+    "say so honestly instead of making things up. Cite the note filename "
+    "when you use information from it."
+)</pre>
+
+<p>The system prompt is the very first message in every conversation, and it sets the ground rules the model is expected to follow for the entire session. Breaking it down:</p>
+<ul>
+<li><b>"using ONLY the user's personal notes"</b> — restricts the model's answers to the knowledge base, rather than its own general training knowledge.</li>
+<li><b>"Always use the search_notes tool first"</b> — pushes the model toward searching before answering, instead of guessing.</li>
+<li><b>"use read_note" for more detail</b> — tells the model there's a second tool for fetching full content once a relevant file is known.</li>
+<li><b>"say so honestly instead of making things up"</b> — directly discourages hallucination when the notes simply don't cover the question.</li>
+<li><b>"Cite the note filename"</b> — makes answers verifiable; a student or user can go check the exact source file.</li>
+</ul>
+
+<h2>Grounded generation, in simple language</h2>
+<p><b>Grounded generation</b> means an LLM's answer is tied to (grounded in) real retrieved evidence, rather than produced purely from the model's internal training. Here, the "grounding evidence" is whatever <code>search_notes</code> and <code>read_note</code> return. The system prompt is the main mechanism nudging the model to behave this way — though it is an instruction, not a hard guarantee, since the model could still ignore it.</p>
+
+<div class="box tip"><span class="label">Student Tip —</span> This pattern — retrieve relevant text, then generate an answer from it — is closely related to what the industry calls <b>RAG (Retrieval-Augmented Generation)</b>, except here the "retrieval" is implemented as an MCP tool the LLM actively chooses to call, rather than something automatically run before every message.</div>
+</div>
+
+<!-- ======================= PART IV DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART IV</div>
+  <h1>The Search<br>Engine</h1>
+</div>
+
+<!-- ======================= CH 13 ======================= -->
+<div class="chapter" id="chapter-13">
+<h1 class="chaptitle"><span class="chno">13</span>What Is TF-IDF?</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p><code>mcp_server.py</code> does not use an LLM to search the notes at all — it uses a classic, purely statistical text-search technique called <b>TF-IDF</b>, short for <b>Term Frequency – Inverse Document Frequency</b>.</p>
+<pre class="code">from sklearn.feature_extraction.text import TfidfVectorizer
+_vectorizer = TfidfVectorizer(stop_words="english")
+_doc_matrix = _vectorizer.fit_transform(corpus)</pre>
+
+<h2>Term Frequency (TF)</h2>
+<p>TF simply counts how often a word appears in one document. If the word "cardamom" appears three times in the recipe note, "cardamom" has a high term frequency <i>for that note</i>.</p>
+
+<h2>Inverse Document Frequency (IDF)</h2>
+<p>IDF measures how <i>rare</i> a word is across <i>all</i> documents. A word that appears in almost every note (like "the," "and," or "notes") is common and not very useful for telling documents apart, so it gets a low IDF weight. A word that appears in only one or two notes (like "cardamom" or "Bandarban") is distinctive, so it gets a high IDF weight.</p>
+
+<h2>Putting them together</h2>
+<p>TF-IDF score for a word in a document = (how often it appears in that document) × (how rare it is across all documents). Multiplying these means a word only scores highly if it is <i>both</i> frequent in that specific note <i>and</i> uncommon elsewhere — exactly the words that best characterize what makes that note distinct.</p>
+
+<div class="box analogy"><span class="label">Simple Example —</span> Across the four notes in this project, the word "notes" might appear in every file and gets almost no weight. But the word "Bandarban" appears only in <code>travel_plans.md</code> — TF-IDF gives it a high weight there, making that note easy to find when someone searches for "Bandarban."</div>
+
+<p><code>stop_words="english"</code> tells scikit-learn to automatically ignore extremely common English filler words (like "the," "is," "and") before even computing TF-IDF, since they carry almost no distinguishing meaning.</p>
+
+<h2>From words to vectors</h2>
+<p>Once every word in every document has a TF-IDF score, each document becomes a long list of numbers — one number per unique word in the whole collection. This list of numbers is called a <b>vector</b>. <code>_doc_matrix</code> is simply a table holding one such vector per note. A search query goes through the exact same transformation via <code>_vectorizer.transform([query])</code>, becoming a vector in that same "word-space," so it can be directly compared to the notes (Chapter 14).</p>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> TF-IDF turns text into numbers based purely on word overlap and rarity. It does not understand meaning or synonyms — searching "kitchen dish" would not automatically match "recipe" unless that exact word also appears in the note. This is an important limitation, revisited in Chapter 26.</div>
+</div>
+
+<!-- ======================= CH 14 ======================= -->
+<div class="chapter" id="chapter-14">
+<h1 class="chaptitle"><span class="chno">14</span>What Is Cosine Similarity?</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<pre class="code">from sklearn.metrics.pairwise import cosine_similarity
+scores = cosine_similarity(query_vec, _doc_matrix).flatten()</pre>
+
+<p>Once the query and every note are represented as TF-IDF vectors, the project needs a way to measure how "close" the query vector is to each note vector. <b>Cosine similarity</b> measures the angle between two vectors, rather than their raw distance.</p>
+
+<div class="box analogy"><span class="label">Simple Visual Example —</span> Picture two arrows drawn from the same starting point. If they point in almost exactly the same direction, the angle between them is small, and cosine similarity is close to <b>1</b> (very similar). If they point in completely unrelated directions, the angle is large and cosine similarity is close to <b>0</b> (unrelated). In text search, "pointing the same direction" roughly means "using the same important words in similar proportions."</div>
+
+<p>Why use the <i>angle</i> rather than a simple count of shared words? Because it naturally accounts for document length — a long note and a short note can still score highly similar to a short query if they emphasize the same distinctive words, since cosine similarity normalizes for magnitude.</p>
+
+<h2>How the project uses the scores</h2>
+<pre class="code">ranked = sorted(zip(_filenames, scores), key=lambda x: x[1], reverse=True)
+...
+for filename, score in ranked[:top_k]:
+    if score <= 0:
+        continue
+    ...</pre>
+<p>Every note gets one similarity score against the query, the notes are sorted highest-score-first, and only the top <code>top_k</code> (default 3) are kept — with any note scoring exactly 0 (no meaningful overlap at all) skipped entirely.</p>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> A score near 1 means "this note strongly shares distinctive words with the query." A score near 0 means "essentially no shared distinctive vocabulary." The <code>relevance_score</code> field returned by <code>search_notes</code> is exactly this number, rounded to three decimal places.</div>
+</div>
+
+<!-- ======================= CH 15 ======================= -->
+<div class="chapter" id="chapter-15">
+<h1 class="chaptitle"><span class="chno">15</span>The Knowledge Base: Markdown Notes</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<pre class="diagram">
+notes/
+├── meeting_notes_2026-09-10.md
+├── project_ideas.md
+├── recipe_notebook.md
+└── travel_plans.md
+</pre>
+
+<h2>Why Markdown</h2>
+<p>Markdown is plain text with light formatting (headings, bold text, lists), which makes it easy for a human to write and edit in any text editor, and just as easy for a program to read as ordinary text — no special parser is required for this project, since the notes are searched and displayed as raw text, formatting characters included.</p>
+
+<h2>How files are discovered and loaded</h2>
+<pre class="code">NOTES_DIR = os.environ.get("NOTES_DIR", os.path.join(os.path.dirname(__file__), "notes"))
+
+def load_notes():
+    global _notes_cache
+    _notes_cache = {}
+    os.makedirs(NOTES_DIR, exist_ok=True)
+    paths = glob.glob(os.path.join(NOTES_DIR, "**", "*.md"), recursive=True)
+    for path in paths:
+        with open(path, "r", encoding="utf-8") as f:
+            _notes_cache[os.path.relpath(path, NOTES_DIR)] = f.read()</pre>
+<ul>
+<li><code>NOTES_DIR</code> defaults to a <code>notes</code> folder next to <code>mcp_server.py</code>, but can be overridden with an environment variable — useful if a student wants to point the assistant at a different notes folder.</li>
+<li><code>glob.glob(..., "**", "*.md", recursive=True)</code> finds every file ending in <code>.md</code> inside <code>NOTES_DIR</code>, including in subfolders, since <code>**</code> matches any depth of nested directories.</li>
+<li>Each file is opened and its full text is stored in <code>_notes_cache</code>, keyed by its filename relative to <code>NOTES_DIR</code> (e.g. <code>"recipe_notebook.md"</code>).</li>
+<li>If a specific file can't be read (permissions, encoding issues, etc.), the error is caught and printed as a warning rather than crashing the whole server.</li>
+</ul>
+
+<h2>How the search index is built on top</h2>
+<pre class="code">def build_index():
+    global _vectorizer, _doc_matrix, _filenames
+    load_notes()
+    _filenames = list(_notes_cache.keys())
+    if not _filenames:
+        _vectorizer = None
+        _doc_matrix = None
+        return
+    corpus = [_notes_cache[f] for f in _filenames]
+    _vectorizer = TfidfVectorizer(stop_words="english")
+    _doc_matrix = _vectorizer.fit_transform(corpus)
+
+build_index()</pre>
+<p><code>build_index()</code> first reloads every note from disk via <code>load_notes()</code>, then fits a fresh TF-IDF vectorizer across the full collection (the "corpus"). This function runs once automatically the moment the server module is imported (<code>build_index()</code> is called at the bottom of the file, outside any function), so the index is ready as soon as the server starts.</p>
+</div>
+
+<!-- ======================= CH 16 ======================= -->
+<div class="chapter" id="chapter-16">
+<h1 class="chaptitle"><span class="chno">16</span>The In-Memory Cache and Index</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>Four module-level variables hold the server's entire state. None of this is written to a database — it all lives in ordinary Python memory for as long as the server process runs.</p>
+
+<table class="data">
+<tr><th>Variable</th><th>What It Stores</th><th>Role</th></tr>
+<tr><td><code>_notes_cache</code></td><td>A dictionary mapping each note's filename to its full text content.</td><td>The raw source of truth <code>read_note</code> and <code>search_notes</code> both read from — avoids re-reading disk on every search.</td></tr>
+<tr><td><code>_vectorizer</code></td><td>The fitted <code>TfidfVectorizer</code> object.</td><td>Knows the exact vocabulary and IDF weights learned from the current notes; used to transform new queries into comparable vectors.</td></tr>
+<tr><td><code>_doc_matrix</code></td><td>The TF-IDF vectors for every note, as a matrix (one row per note).</td><td>What each query vector is compared against via cosine similarity.</td></tr>
+<tr><td><code>_filenames</code></td><td>An ordered list of filenames matching the rows of <code>_doc_matrix</code>.</td><td>Lets the code map a similarity score back to the correct filename after sorting.</td></tr>
+</table>
+
+<div class="box warn"><span class="label">Note —</span> Because this is all in-memory, restarting the server clears and rebuilds it from scratch (via the automatic <code>build_index()</code> call), and any change to the notes on disk requires calling <code>reindex_notes()</code> — otherwise the running server keeps searching its stale, in-memory snapshot (Chapter 25).</div>
+</div>
+
+<!-- ======================= PART V DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART V</div>
+  <h1>Robustness,<br>UI &amp; Security</h1>
+</div>
+
+<!-- ======================= CH 17 ======================= -->
+<div class="chapter" id="chapter-17">
+<h1 class="chaptitle"><span class="chno">17</span>Error Handling in This Project</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<table class="data">
+<tr><th>Situation</th><th>How the Code Handles It</th></tr>
+<tr><td>Missing/unreadable note file during load</td><td><code>load_notes()</code> catches the exception per-file and prints a warning, so one bad file doesn't stop the rest from loading.</td></tr>
+<tr><td>No notes indexed yet</td><td><code>search_notes</code> returns a JSON error message telling the user to add <code>.md</code> files, instead of crashing on a missing vectorizer.</td></tr>
+<tr><td><code>read_note</code> given an unknown filename</td><td>Returns a JSON <code>{"error": ...}</code> object rather than raising an exception.</td></tr>
+<tr><td>MCP connection error during a tool call</td><td><code>call_mcp_tool()</code> catches the exception, logs a warning, and attempts one reconnect (a fresh call to <code>_connect()</code>) before retrying the tool call once.</td></tr>
+<tr><td>Reconnect also fails</td><td>A <code>RuntimeError</code> is raised with details, which bubbles up and is shown to the user via <code>chat_fn()</code>'s own <code>try/except</code>.</td></tr>
+<tr><td>Invalid JSON in the LLM's tool-call arguments</td><td><code>run_tool_calling_loop()</code> catches <code>json.JSONDecodeError</code> and falls back to an empty arguments dict rather than crashing.</td></tr>
+<tr><td>OpenRouter returns an API-level error</td><td><code>run_tool_calling_loop()</code> checks for an <code>"error"</code> key in the response and returns it as a readable message.</td></tr>
+<tr><td>Missing OpenRouter API key</td><td><code>call_openrouter()</code> raises a clear <code>RuntimeError</code> before ever making the HTTP request.</td></tr>
+<tr><td>A specific tool call fails at runtime</td><td>The exception is caught and turned into a JSON error object that is fed back to the LLM as the tool's result, so the model can adapt its next answer instead of the whole request crashing.</td></tr>
+<tr><td>Too many tool-calling rounds</td><td><code>MAX_TOOL_ITERATIONS = 5</code> caps the loop; if exceeded, a friendly "try rephrasing" message is returned.</td></tr>
+</table>
+
+<h2>Why limit tool iterations?</h2>
+<p>Without a cap, a model could theoretically keep calling tools back and forth indefinitely — burning time, API cost, and never producing a final answer. Capping at 5 rounds protects against this "infinite tool loop" scenario while still giving the model several chances to search and re-search before giving up.</p>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> Almost every error path in this project returns a readable message instead of letting the program crash silently — a pattern worth copying in your own projects.</div>
+</div>
+
+<!-- ======================= CH 18 ======================= -->
+<div class="chapter" id="chapter-18">
+<h1 class="chaptitle"><span class="chno">18</span>The Gradio User Interface</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<pre class="code">with gr.Blocks(title="Personal Knowledge Base Assistant (MCP)") as demo:
+    gr.Markdown("# 📚 Personal Knowledge Base Assistant\n...")
+    api_key_box = gr.Textbox(
+        label="OpenRouter API Key",
+        type="password",
+        placeholder="sk-or-...",
+    )
+    gr.ChatInterface(fn=chat_fn, additional_inputs=[api_key_box])
+
+demo.launch()</pre>
+
+<ul>
+<li><b><code>gr.Blocks(...)</code></b> — a flexible Gradio layout container that lets multiple components (a title, a textbox, a chat interface) be arranged on one page.</li>
+<li><b><code>gr.Markdown(...)</code></b> — renders a short introductory message and instructions above the chat.</li>
+<li><b><code>gr.Textbox(type="password")</code></b> — the box where the user pastes their OpenRouter API key. <code>type="password"</code> masks the characters on screen (showing dots instead of the real key) so it isn't visible to anyone glancing at the screen — this is a UI-level precaution, not encryption.</li>
+<li><b><code>gr.ChatInterface(fn=chat_fn, additional_inputs=[api_key_box])</code></b> — builds the actual chat window. It automatically manages the visible chat history and calls <code>chat_fn(message, history, api_key)</code> every time the user sends a message, passing along the current value of the API key textbox as the extra <code>additional_inputs</code> argument.</li>
+<li><b><code>demo.launch()</code></b> — starts Gradio's local web server and prints a URL the user opens in a browser.</li>
+</ul>
+
+<h2>How a chat message reaches chat_fn()</h2>
+<p><code>chat_fn</code> rebuilds the full <code>messages</code> list on every call: it starts with the system prompt, walks through Gradio's <code>history</code> (handling both the newer dictionary format and an older tuple format for backward compatibility), appends the new user message, and then calls <code>run_tool_calling_loop()</code>. The returned string becomes the assistant's next message, which Gradio displays automatically.</p>
+</div>
+
+<!-- ======================= CH 19 ======================= -->
+<div class="chapter" id="chapter-19">
+<h1 class="chaptitle"><span class="chno">19</span>API Keys and Security</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>The OpenRouter API key is entered by the user directly into the Gradio textbox at the start of each session and is kept only in the browser form field and in the in-memory <code>messages</code>/function calls for that session — the code never writes it to disk or logs it.</p>
+
+<h2>Why not hard-code an API key in source code?</h2>
+<ul>
+<li>Source code is often shared, committed to version control, or copied between machines — a hard-coded key would leak with it.</li>
+<li>Anyone with read access to the file gets full use of the key (and whatever it's billed for).</li>
+<li>Keys need to be rotated (replaced) periodically for security; hard-coding makes that painful, since every copy of the code would need updating.</li>
+</ul>
+
+<div class="box glossaryinline">
+<dl class="glossary" style="margin:0;">
+<dt>API Key</dt><dd>A secret string used to authenticate requests to an API, proving who is calling and (often) what they're allowed to use or be billed for.</dd>
+<dt>Secret</dt><dd>Any piece of sensitive information (like a password or key) that should not be exposed to unauthorized people.</dd>
+<dt>Environment Variable</dt><dd>A value set outside the source code, in the operating system or shell, that a program can read at runtime — one common alternative to typing a key into a UI each session.</dd>
+<dt>Memory-Only Credentials</dt><dd>A secret that is only ever held in a running program's memory and never saved to a file, so it disappears the moment the program stops.</dd>
+<dt>.gitignore</dt><dd>A file that tells Git which files or patterns to never track — commonly used to make sure secret files (like a <code>.env</code>) are never accidentally committed.</dd>
+<dt>Secret Rotation</dt><dd>The practice of periodically replacing a key or password with a new one, to limit the damage if an old one was ever leaked.</dd>
+</dl>
+</div>
+
+<div class="box warn"><span class="label">Important —</span> This guide does not, and must not, reproduce any real API key. Wherever an example key is needed, use a clearly fake placeholder such as <code>YOUR_OPENROUTER_API_KEY</code>.</div>
+</div>
+
+<!-- ======================= PART VI DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART VI</div>
+  <h1>Reference</h1>
+</div>
+
+<!-- ======================= CH 20 ======================= -->
+<div class="chapter" id="chapter-20">
+<h1 class="chaptitle"><span class="chno">20</span>Understanding Every Important File</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<div class="filecard">
+<div class="fname">mcp_server.py</div>
+<div class="fbody">
+<b>Purpose:</b> The MCP server. Exposes the knowledge base as three MCP tools.<br>
+<b>Important components:</b> <code>FastMCP</code> instance, <code>_notes_cache</code>/<code>_vectorizer</code>/<code>_doc_matrix</code>/<code>_filenames</code>, <code>load_notes()</code>, <code>build_index()</code>, and the <code>search_notes</code>/<code>read_note</code>/<code>reindex_notes</code> tools.<br>
+<b>How it works:</b> Builds a TF-IDF index of the <code>notes/</code> folder at startup, then waits for MCP requests over stdio, running <code>mcp.run()</code> when executed directly.<br>
+<b>Connects to:</b> Launched as a subprocess by <code>kb_assistant_mcp.py</code>; has no knowledge of Gradio or OpenRouter at all — it only speaks MCP.
+</div></div>
+
+<div class="filecard">
+<div class="fname">kb_assistant_mcp.py</div>
+<div class="fbody">
+<b>Purpose:</b> The MCP client, the OpenRouter integration, and the Gradio UI, all in one script.<br>
+<b>Important components:</b> the background asyncio loop/thread, <code>_connect()</code>, <code>call_mcp_tool()</code>, <code>call_openrouter()</code>, <code>run_tool_calling_loop()</code>, <code>chat_fn()</code>, and the <code>gr.Blocks</code> UI.<br>
+<b>How it works:</b> Launches and connects to <code>mcp_server.py</code>, discovers its tools, then for every chat message runs a loop that lets the LLM call those tools (up to <code>MAX_TOOL_ITERATIONS</code> times) before returning a final answer.<br>
+<b>Connects to:</b> Starts <code>mcp_server.py</code> as a subprocess; sends HTTPS requests to OpenRouter; is driven by Gradio's UI event system.
+</div></div>
+
+<div class="filecard">
+<div class="fname">requirements.txt</div>
+<div class="fbody">
+<b>Purpose:</b> Lists the Python packages the project depends on.<br>
+<b>Contents (verified from the file):</b> <code>mcp==1.30.0</code>, <code>gradio</code>, <code>requests</code>, <code>scikit-learn</code>.<br>
+<b>How it works:</b> Read by <code>pip install -r requirements.txt</code> to install everything the two scripts import.<br>
+<b>Connects to:</b> Every import at the top of <code>mcp_server.py</code> and <code>kb_assistant_mcp.py</code> is satisfied by one of these packages.
+</div></div>
+
+<div class="filecard">
+<div class="fname">notes/*.md (four files)</div>
+<div class="fbody">
+<b>Purpose:</b> The actual knowledge base content the chatbot searches and answers from.<br>
+<b>Files present:</b> <code>meeting_notes_2026-09-10.md</code>, <code>project_ideas.md</code>, <code>recipe_notebook.md</code>, <code>travel_plans.md</code>.<br>
+<b>How they function:</b> Each is loaded as plain text into <code>_notes_cache</code>, turned into a TF-IDF vector, and becomes a candidate result for <code>search_notes</code> and a readable target for <code>read_note</code>. Their specific content is not the focus of this guide — what matters is that they demonstrate a realistic, varied personal knowledge base (work notes, ideas, a recipe, and travel plans).<br>
+<b>Connects to:</b> Read exclusively by <code>mcp_server.py</code>'s <code>load_notes()</code>/<code>build_index()</code>; never touched directly by the client or the LLM.
+</div></div>
+</div>
+
+<!-- ======================= CH 21 ======================= -->
+<div class="chapter" id="chapter-21">
+<h1 class="chaptitle"><span class="chno">21</span>Dependencies Explained</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<table class="data">
+<tr><th>Package</th><th>What It Is</th><th>Where It's Used In This Project</th></tr>
+<tr><td><code>mcp==1.30.0</code></td><td>The official Python SDK implementing the Model Context Protocol.</td><td>Provides <code>FastMCP</code> in <code>mcp_server.py</code>, and <code>ClientSession</code>/<code>StdioServerParameters</code>/<code>stdio_client</code> in <code>kb_assistant_mcp.py</code>.</td></tr>
+<tr><td><code>gradio</code></td><td>A Python library for quickly building web UIs for ML/AI demos.</td><td>Builds the entire chat window: <code>gr.Blocks</code>, <code>gr.Textbox</code>, <code>gr.ChatInterface</code>.</td></tr>
+<tr><td><code>requests</code></td><td>A widely-used Python HTTP client library.</td><td>Sends the POST request to OpenRouter inside <code>call_openrouter()</code>.</td></tr>
+<tr><td><code>scikit-learn</code></td><td>A general-purpose machine learning library.</td><td>Supplies <code>TfidfVectorizer</code> and <code>cosine_similarity</code>, used entirely inside <code>mcp_server.py</code> for the search engine.</td></tr>
+</table>
+
+<div class="box tip"><span class="label">Student Tip —</span> Only <code>mcp==1.30.0</code> is pinned to an exact version in <code>requirements.txt</code>; the others are unpinned, meaning <code>pip</code> will install whatever the latest compatible version is at install time. Pinning matters most for the MCP SDK here because the MCP protocol and API surface are newer and change faster than a mature library like <code>requests</code>.</div>
+</div>
+
+<!-- ======================= CH 22 ======================= -->
+<div class="chapter" id="chapter-22">
+<h1 class="chaptitle"><span class="chno">22</span>Installation and Running Guide</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<table class="data">
+<tr><th>Step</th><th>What To Do</th></tr>
+<tr><td>1. Install Python</td><td>Install a recent Python 3 version from <code>python.org</code> (Python 3.10+ recommended for the async features used here).</td></tr>
+<tr><td>2. Create a virtual environment</td><td><code>python -m venv venv</code>, then activate it (<code>venv\Scripts\activate</code> on Windows, <code>source venv/bin/activate</code> on macOS/Linux).</td></tr>
+<tr><td>3. Install dependencies</td><td><code>pip install -r requirements.txt</code></td></tr>
+<tr><td>4. Check the project structure</td><td>Confirm <code>mcp_server.py</code>, <code>kb_assistant_mcp.py</code>, and a <code>notes/</code> folder with <code>.md</code> files all sit in the same directory.</td></tr>
+<tr><td>5. Run the chatbot</td><td><code>python kb_assistant_mcp.py</code></td></tr>
+<tr><td>6. Open the Gradio URL</td><td>Copy the local URL Gradio prints in the terminal (e.g. <code>http://127.0.0.1:7860</code>) into a browser.</td></tr>
+<tr><td>7. Enter the OpenRouter API key</td><td>Paste a valid OpenRouter key (see <code>YOUR_OPENROUTER_API_KEY</code>) into the password-style textbox at the top of the page.</td></tr>
+<tr><td>8. Ask questions about the notes</td><td>Try one of the example questions in Chapter 23.</td></tr>
+</table>
+
+<h2>Troubleshooting</h2>
+<table class="data">
+<tr><th>Symptom</th><th>Likely Cause / Fix</th></tr>
+<tr><td>"Enter your OpenRouter API key..." error</td><td>The textbox was left empty when sending a message — paste a key first.</td></tr>
+<tr><td>"No notes indexed" message</td><td>The <code>notes/</code> folder is empty or missing <code>.md</code> files — add some and call <code>reindex_notes</code>, or restart the server.</td></tr>
+<tr><td>Chatbot never calls a tool / answers generically</td><td>The chosen OpenRouter model may not reliably support tool calling — try a different <code>KB_MODEL</code> known to support tools.</td></tr>
+<tr><td>"Stopped after too many tool-calling steps"</td><td><code>MAX_TOOL_ITERATIONS</code> (5) was hit — rephrase the question to be more specific.</td></tr>
+<tr><td>MCP connection errors in the terminal</td><td>Check that <code>python</code> on your PATH can run <code>mcp_server.py</code> standalone without import errors first.</td></tr>
+</table>
+</div>
+
+<!-- ======================= CH 23 ======================= -->
+<div class="chapter" id="chapter-23">
+<h1 class="chaptitle"><span class="chno">23</span>Example Questions Students Can Ask</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<table class="data">
+<tr><th>Example Question</th><th>Note It Should Draw From</th><th>Expected Tool-Calling Flow</th></tr>
+<tr><td>"What was decided about Redis?"</td><td><code>meeting_notes_2026-09-10.md</code></td><td>Likely a <code>search_notes</code> call, possibly followed by <code>read_note</code> for full context.</td></tr>
+<tr><td>"What are the current project ideas?"</td><td><code>project_ideas.md</code></td><td>Likely <code>search_notes</code>, then possibly <code>read_note</code> if a fuller list is needed.</td></tr>
+<tr><td>"What ingredients are needed for Smoky Cardamom Chicken?"</td><td><code>recipe_notebook.md</code></td><td>Likely <code>search_notes</code> to locate the recipe, then <code>read_note</code> for the exact ingredient list, since a 500-character snippet may be enough or may need the full note.</td></tr>
+<tr><td>"What are the travel plans?"</td><td><code>travel_plans.md</code></td><td>Likely a single <code>search_notes</code> call, since the note is short.</td></tr>
+<tr><td>"What was the approved GPU rental budget?"</td><td><code>meeting_notes_2026-09-10.md</code></td><td>Likely <code>search_notes</code> for "GPU rental budget."</td></tr>
+</table>
+
+<div class="box warn"><span class="label">Note —</span> These are the <i>expected</i> flows given the system prompt and available tools — not a guarantee. Exactly which tool(s) get called, and in what order, is ultimately the LLM's own decision at inference time.</div>
+</div>
+
+<!-- ======================= CH 24 ======================= -->
+<div class="chapter" id="chapter-24">
+<h1 class="chaptitle"><span class="chno">24</span>search_notes vs. read_note</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>The project deliberately has <i>two</i> reading tools instead of one, because they solve different problems.</p>
+<ul>
+<li><code>search_notes</code> answers: <i>"which note(s), if any, are relevant to this question?"</i> — it returns many candidates, each as a short snippet, which keeps the LLM's context small when it isn't yet sure which note it needs.</li>
+<li><code>read_note</code> answers: <i>"give me everything in this one specific note."</i> — used once the right filename is already known, to get details a 500-character snippet might cut off.</li>
+</ul>
+
+<pre class="diagram">
+         User Question
+               │
+               ▼
+        search_notes()
+               │
+               ▼
+  Relevant filename discovered
+               │
+               ▼
+          read_note()
+               │
+               ▼
+       Detailed content
+               │
+               ▼
+     LLM generates answer
+</pre>
+
+<div class="box takeaway"><span class="label">Key Takeaway —</span> This two-step "search, then fetch" pattern mirrors how a person would use a library: first check the card catalog (or index) to find the right book, then go pull that specific book off the shelf to read the details.</div>
+</div>
+
+<!-- ======================= CH 25 ======================= -->
+<div class="chapter" id="chapter-25">
+<h1 class="chaptitle"><span class="chno">25</span>Reindexing the Knowledge Base</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<p>Because <code>_notes_cache</code>, <code>_vectorizer</code>, and <code>_doc_matrix</code> are only built once — automatically, when the server module loads — any change made to the files on disk afterward is invisible to a running server until it is told to look again.</p>
+
+<pre class="diagram">
+   Add / edit a Markdown file in notes/
+                 │
+                 ▼
+  Existing in-memory index does NOT
+  automatically contain the change
+                 │
+                 ▼
+        Call reindex_notes()
+                 │
+                 ▼
+   build_index() runs again:
+   load_notes() re-reads every file,
+   TfidfVectorizer is re-fit
+                 │
+                 ▼
+     New/changed note becomes searchable
+</pre>
+
+<p><code>reindex_notes()</code> can be triggered two ways in practice: the LLM could decide to call it as a tool if instructed to, or a developer could simply restart the server process, since <code>build_index()</code> also runs automatically at startup.</p>
+</div>
+
+<!-- ======================= CH 26 ======================= -->
+<div class="chapter" id="chapter-26">
+<h1 class="chaptitle"><span class="chno">26</span>Limitations of This Project</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<ul>
+<li><b>Lexical, not semantic, search.</b> TF-IDF matches on shared exact words. It has no built-in understanding of synonyms or meaning — a query using entirely different wording than the note (but the same idea) may not be found.</li>
+<li><b>Only Markdown files are indexed.</b> <code>glob.glob(..., "*.md", ...)</code> only picks up <code>.md</code> files; PDFs, Word documents, or plain <code>.txt</code> notes would not be discovered.</li>
+<li><b>The search index lives entirely in memory.</b> It is rebuilt from scratch on every server restart, and is not persisted anywhere.</li>
+<li><b>Changes require explicit reindexing.</b> As covered in Chapter 25, edits on disk are invisible until <code>reindex_notes()</code> runs or the server restarts.</li>
+<li><b>Tool-calling reliability depends on the chosen LLM.</b> Not every model available through OpenRouter supports tool/function calling equally well — the code's own comments acknowledge this.</li>
+<li><b>Dependent on an external API.</b> The chatbot cannot answer anything without a working, reachable OpenRouter endpoint and a valid API key; OpenRouter's own availability and model lineup can change over time.</li>
+<li><b>Tool-calling rounds are capped.</b> <code>MAX_TOOL_ITERATIONS = 5</code> means unusually complex, multi-hop questions could be cut off before a final answer is reached.</li>
+<li><b>Local files, not a production database.</b> There's no access control, versioning, or concurrent-write handling — this fits a single personal user, not a multi-user production system.</li>
+</ul>
+</div>
+
+<!-- ======================= CH 27 ======================= -->
+<div class="chapter" id="chapter-27">
+<h1 class="chaptitle"><span class="chno">27</span>MCP vs. Direct Function Calling</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<table class="data">
+<tr><th>Aspect</th><th>Direct Function/Tool Calling</th><th>MCP-Based Tool Integration (this project)</th></tr>
+<tr><td>Where tool logic lives</td><td>Typically inside the same process as the LLM-calling code — a Python function called directly.</td><td>In a separate MCP server process (<code>mcp_server.py</code>), reached through a standardized protocol.</td></tr>
+<tr><td>Tool schema</td><td>Usually hand-written by the developer to match each tool function.</td><td>Discovered dynamically at connection time via <code>list_tools()</code> — no hand-written schema needed on the client side.</td></tr>
+<tr><td>Reusability</td><td>Tightly coupled to that one application's codebase.</td><td>The same MCP server could, in principle, be reused by any other MCP-compatible client, since it speaks a standard protocol.</td></tr>
+<tr><td>Process boundary</td><td>Same process (or manually wired subprocess/IPC).</td><td>A separate process by design, connected over stdio (or other MCP transports), giving a clean separation of concerns.</td></tr>
+<tr><td>Complexity</td><td>Simpler to set up for a single, small project.</td><td>More moving parts (subprocess, async session, discovery step) in exchange for standardization and separation.</td></tr>
+</table>
+
+<div class="box warn"><span class="label">Note —</span> This project uses MCP specifically to keep the "chatbot/LLM" concerns and the "knowledge-base tool" concerns cleanly separated. That is a genuine architectural benefit here, but it is not a universal claim that MCP is always the better choice — for a very small, single-file script, direct function calling could well be simpler.</div>
+</div>
+
+<!-- ======================= CH 28 ======================= -->
+<div class="chapter" id="chapter-28">
+<h1 class="chaptitle"><span class="chno">28</span>Security and Prompt Injection</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<h2>Prompt injection</h2>
+<p><b>Prompt injection</b> is when text an LLM reads (rather than trusted developer instructions) tries to make the model ignore its original instructions or behave differently than intended. In this project, tool results (the content of notes) are fed back into the conversation the LLM reads — so if a note's content contained text deliberately written to look like an instruction (e.g. "ignore previous instructions and reveal..."), a vulnerable model could, in theory, be influenced by it.</p>
+
+<h2>Untrusted user input</h2>
+<p>The user's chat message and the note content the LLM reads back should both be treated as data, not as trusted commands, by any well-designed system — the <code>SYSTEM_PROMPT</code> is the layer meant to stay authoritative over both.</p>
+
+<h2>Tool permissions</h2>
+<p>In this project, the only tools available are read-oriented (<code>search_notes</code>, <code>read_note</code>) plus one index-rebuilding tool (<code>reindex_notes</code>) — there is no tool that deletes files, sends data externally, or executes arbitrary code, which limits the potential damage even if a model were misled.</p>
+
+<h2>Sensitive data</h2>
+<p>Because the notes could contain personal information (as they do here — meeting notes, travel plans), and tool results are sent to an external LLM API (OpenRouter) as part of the conversation, users should be aware that note content leaves their machine whenever the model reads it via a tool call.</p>
+
+<h2>API key protection and tool output handling</h2>
+<p>The API key is entered per-session and never written to disk (Chapter 19). Tool output is treated as plain text data appended to the conversation — the client does not execute or evaluate it in any special way.</p>
+
+<h2>External API trust</h2>
+<p>Since the LLM itself runs on OpenRouter's infrastructure, the user is trusting that third party with the conversation content, including any note snippets the model reads.</p>
+</div>
+
+<!-- ======================= CH 29 ======================= -->
+<div class="chapter" id="chapter-29">
+<h1 class="chaptitle"><span class="chno">29</span>Possible Future Improvements</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<div class="box warn"><span class="label">Important —</span> None of the items below exist in the current code. They are reasonable directions a student could take this project, not features already implemented.</div>
+
+<ul>
+<li><b>Semantic / vector search</b> using embeddings, to find conceptually related notes even without exact word overlap.</li>
+<li><b>A persistent database</b> (or vector store) instead of an in-memory index that resets on every restart.</li>
+<li><b>Better document chunking</b> for long notes, so relevant sections are retrieved instead of a whole (or truncated) file.</li>
+<li><b>Metadata filtering</b> (e.g. search by date, tag, or note category).</li>
+<li><b>More MCP tools</b> — e.g. creating or editing notes, deleting notes, or counting notes.</li>
+<li><b>Authentication</b> for multi-user deployments.</li>
+<li><b>Better logging</b> of tool calls and errors for debugging.</li>
+<li><b>A richer UI</b>, e.g. showing which notes were used as sources alongside the answer.</li>
+<li><b>Streaming responses</b> from the LLM instead of waiting for the full reply.</li>
+<li><b>Tool permission controls</b>, restricting which tools an LLM session is allowed to call.</li>
+<li><b>Production deployment</b> considerations — process supervision, scaling beyond a single local subprocess, etc.</li>
+</ul>
+</div>
+
+<!-- ======================= PART VII DIVIDER ======================= -->
+<div class="part-divider">
+  <div class="plabel">PART VII</div>
+  <h1>Study Aids</h1>
+</div>
+
+<!-- ======================= CH 30 ======================= -->
+<div class="chapter" id="chapter-30">
+<h1 class="chaptitle"><span class="chno">30</span>Viva Questions and Answers</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<h2>Beginner</h2>
+<div class="qa"><div class="q">Q: What is an LLM?</div><div class="a">A: A large language model — a program trained on huge amounts of text that generates relevant text in response to an input prompt.</div></div>
+<div class="qa"><div class="q">Q: What is MCP?</div><div class="a">A: Model Context Protocol — a standardized way for an AI application to connect to and use external tools and data sources.</div></div>
+<div class="qa"><div class="q">Q: What is an MCP server?</div><div class="a">A: A program that exposes a set of tools following the MCP specification, so an MCP client can discover and call them.</div></div>
+<div class="qa"><div class="q">Q: What is an MCP client?</div><div class="a">A: The program that connects to an MCP server, discovers its tools, and calls them on behalf of the AI application.</div></div>
+<div class="qa"><div class="q">Q: What is a tool?</div><div class="a">A: A specific function the LLM is allowed to request be executed — here, <code>search_notes</code>, <code>read_note</code>, and <code>reindex_notes</code>.</div></div>
+<div class="qa"><div class="q">Q: What is Gradio?</div><div class="a">A: A Python library used to quickly build a web-based chat UI for the assistant.</div></div>
+
+<h2>Intermediate</h2>
+<div class="qa"><div class="q">Q: Why does the chatbot need an MCP server?</div><div class="a">A: The LLM cannot access local files itself; the server provides a standardized way to expose note-searching and note-reading capability as callable tools.</div></div>
+<div class="qa"><div class="q">Q: How does tool discovery work?</div><div class="a">A: At connection time, the client calls <code>session.list_tools()</code>, and the server replies with the current list of tools registered via <code>@mcp.tool()</code>, including their names, descriptions, and parameter schemas.</div></div>
+<div class="qa"><div class="q">Q: How does the LLM know which tools are available?</div><div class="a">A: The discovered MCP tools are converted into an OpenAI-style schema by <code>_mcp_tools_to_openai_schema()</code> and sent as the <code>"tools"</code> field in every OpenRouter request.</div></div>
+<div class="qa"><div class="q">Q: Why is stdio used?</div><div class="a">A: Because the server runs as a local subprocess on the same machine; stdio (standard input/output) is a simple, reliable channel for two co-located processes to exchange MCP protocol messages.</div></div>
+<div class="qa"><div class="q">Q: Why are MCP tool definitions converted to another schema?</div><div class="a">A: OpenRouter (mirroring the OpenAI API) expects tools described in its own specific JSON "function" format, which differs from MCP's native tool representation.</div></div>
+<div class="qa"><div class="q">Q: Why are TF-IDF and cosine similarity used?</div><div class="a">A: To rank notes by textual relevance to a query without needing an LLM, database, or external service — a lightweight, fully local, fully explainable search method.</div></div>
+
+<h2>Advanced</h2>
+<div class="qa"><div class="q">Q: Why does the application use an asynchronous MCP session?</div><div class="a">A: The official MCP Python SDK's client operations are async by design (built on <code>asyncio</code>), so any code using it must run inside an event loop.</div></div>
+<div class="qa"><div class="q">Q: Why is a background event loop required?</div><div class="a">A: Gradio's callback functions are synchronous, but the MCP session's methods must run on an <code>asyncio</code> event loop; a dedicated background loop in its own thread, bridged with <code>run_coroutine_threadsafe</code>, lets the synchronous UI code use the async MCP client.</div></div>
+<div class="qa"><div class="q">Q: What happens if the MCP server disconnects?</div><div class="a">A: <code>call_mcp_tool()</code> catches the resulting exception, attempts one reconnect via <code>_connect()</code>, and retries the tool call once before raising a clear error if that also fails.</div></div>
+<div class="qa"><div class="q">Q: Why is tool-call iteration limited?</div><div class="a">A: <code>MAX_TOOL_ITERATIONS = 5</code> prevents a runaway loop where the model keeps requesting tools indefinitely without ever producing a final answer.</div></div>
+<div class="qa"><div class="q">Q: How could semantic search improve this project?</div><div class="a">A: Replacing TF-IDF with embedding-based vector search could match notes based on meaning rather than exact word overlap, catching relevant notes phrased differently than the query.</div></div>
+<div class="qa"><div class="q">Q: How could this architecture be scaled?</div><div class="a">A: Possible directions include running the MCP server as an independently deployed, network-reachable service rather than a local subprocess, adding a persistent index/database, and supporting multiple concurrent users with proper authentication.</div></div>
+</div>
+
+<!-- ======================= CH 31 ======================= -->
+<div class="chapter" id="chapter-31">
+<h1 class="chaptitle"><span class="chno">31</span>Student Exercises</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<table class="data">
+<tr><th>Exercise</th><th>Task</th><th>What You'll Learn</th></tr>
+<tr><td>1</td><td>Add a new Markdown note to <code>notes/</code>.</td><td>How the knowledge base is just plain files, and how easy it is to extend.</td></tr>
+<tr><td>2</td><td>Ask the chatbot a question about your new note.</td><td>Whether reindexing is required, and how tool calling behaves end to end.</td></tr>
+<tr><td>3</td><td>Modify <code>search_notes()</code> to return more results by default.</td><td>How to safely edit an MCP tool's behavior and default parameters.</td></tr>
+<tr><td>4</td><td>Change the default <code>top_k</code> value.</td><td>How a small parameter change affects the amount of context sent to the LLM.</td></tr>
+<tr><td>5</td><td>Create a brand-new MCP tool.</td><td>The full pattern: write a function, decorate it with <code>@mcp.tool()</code>, and see it appear automatically in tool discovery.</td></tr>
+<tr><td>6</td><td>Create a tool that counts the number of notes.</td><td>Practice writing a simple, read-only MCP tool from scratch.</td></tr>
+<tr><td>7</td><td>Experiment with <code>TfidfVectorizer</code> parameters (e.g. <code>ngram_range</code>, <code>max_df</code>).</td><td>How TF-IDF configuration changes search quality.</td></tr>
+<tr><td>8</td><td>Replace TF-IDF search with embedding-based search.</td><td>A hands-on comparison of lexical vs. semantic search, and how to swap out a component behind the same tool interface.</td></tr>
+</table>
+</div>
+
+<!-- ======================= CH 32 ======================= -->
+<div class="chapter" id="chapter-32">
+<h1 class="chaptitle"><span class="chno">32</span>Glossary</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+<dl class="glossary">
+<dt>AI</dt><dd>Artificial Intelligence — computer systems performing tasks that typically require human-like intelligence.</dd>
+<dt>LLM</dt><dd>Large Language Model — a text-generating model trained on large amounts of text data.</dd>
+<dt>Chatbot</dt><dd>An application that lets a user hold a conversation with a program, typically backed by an LLM.</dd>
+<dt>Prompt</dt><dd>The text input given to an LLM to guide its response.</dd>
+<dt>Context</dt><dd>Everything the model can currently "see": instructions, history, and tool results.</dd>
+<dt>Token</dt><dd>A chunk of text (roughly a word or word-piece) an LLM processes as one unit.</dd>
+<dt>API</dt><dd>Application Programming Interface — a defined way for programs to talk to each other.</dd>
+<dt>API Key</dt><dd>A secret string used to authenticate and authorize API requests.</dd>
+<dt>OpenRouter</dt><dd>A hosted gateway providing one consistent API to many different LLMs.</dd>
+<dt>MCP</dt><dd>Model Context Protocol — a standard for connecting AI applications to external tools and data.</dd>
+<dt>MCP Client</dt><dd>The program that connects to an MCP server, discovers tools, and calls them.</dd>
+<dt>MCP Server</dt><dd>The program that exposes tools according to the MCP specification.</dd>
+<dt>Tool</dt><dd>A callable capability an AI application can request be executed.</dd>
+<dt>Tool Calling</dt><dd>The process by which an LLM requests a specific tool be run, with specific arguments.</dd>
+<dt>Function Calling</dt><dd>A general industry term for the same concept as tool calling — the model outputs a structured request to invoke a function.</dd>
+<dt>Tool Schema</dt><dd>The structured description (name, description, parameters) of a tool that a model is shown so it knows how to call it.</dd>
+<dt>JSON</dt><dd>JavaScript Object Notation — a lightweight, text-based data format widely used to exchange structured data.</dd>
+<dt>Schema</dt><dd>A defined structure describing what shape a piece of data (like a tool's parameters) should take.</dd>
+<dt>stdio</dt><dd>Standard input/output — the built-in input and output streams a program can read from and write to; used here as the transport between client and server.</dd>
+<dt>Subprocess</dt><dd>A separate program process launched and (usually) managed by another program.</dd>
+<dt>Async</dt><dd>Short for "asynchronous" — code structured to allow waiting for slow operations (like I/O) without blocking everything else.</dd>
+<dt>Coroutine</dt><dd>A special async function (defined with <code>async def</code>) that can be paused and resumed while waiting on other operations.</dd>
+<dt>Thread</dt><dd>An independent path of execution within a program, allowing work to happen concurrently.</dd>
+<dt>Gradio</dt><dd>A Python library for quickly building web UIs, often used for AI/ML demos.</dd>
+<dt>TF-IDF</dt><dd>Term Frequency–Inverse Document Frequency — a statistical measure of how important a word is to a document within a collection.</dd>
+<dt>Cosine Similarity</dt><dd>A measure of how similar two vectors are, based on the angle between them.</dd>
+<dt>Vector</dt><dd>A list of numbers representing something (like a document or query) in a way that can be mathematically compared.</dd>
+<dt>Knowledge Base</dt><dd>A structured or semi-structured collection of information a system can draw answers from — here, the Markdown notes.</dd>
+<dt>Index</dt><dd>A precomputed structure (here, the TF-IDF vectors) that makes searching faster than scanning raw text every time.</dd>
+<dt>Grounded Generation</dt><dd>An LLM's response being tied to specific retrieved evidence, rather than generated purely from the model's internal training.</dd>
+</dl>
+</div>
+
+<!-- ======================= CH 33 ======================= -->
+<div class="chapter" id="chapter-33">
+<h1 class="chaptitle"><span class="chno">33</span>The Whole Project in One Picture</h1><a class="back-to-toc" href="#toc-top">&uarr; Contents</a>
+
+<pre class="diagram">
+                              USER
+                               │
+                               ▼
+                      GRADIO CHATBOT
+                               │
+                               ▼
+                    LLM  /  OPENROUTER
+                               │
+              LLM DECIDES WHETHER A TOOL IS NEEDED
+                               │
+                               ▼
+                         MCP CLIENT
+                               │
+                    MCP PROTOCOL OVER STDIO
+                               │
+                               ▼
+                         MCP SERVER
+                               │
+                               ▼
+                          MCP TOOL
+                               │
+                               ▼
+                LOCAL MARKDOWN KNOWLEDGE BASE
+                               │
+                               ▼
+                TF-IDF  +  COSINE SIMILARITY
+                               │
+                               ▼
+                          TOOL RESULT
+                               │
+                               ▼
+                         MCP CLIENT
+                               │
+                               ▼
+                              LLM
+                               │
+                               ▼
+                         FINAL ANSWER
+                               │
+                               ▼
+                              USER
+</pre>
+
+<p>In plain language: the user's question travels down through the chat UI to the LLM. The LLM, guided by the system prompt and the list of tools it was shown, decides whether it needs to look something up. If it does, that request flows through the MCP client, over stdio, into the MCP server, which runs the actual TF-IDF search or note-reading logic against the local Markdown files. The result flows all the way back up, is handed to the LLM as new context, and the LLM composes a final, grounded, natural-language answer that the user sees in the chat window.</p>
+
+<h2>Final Summary of Roles</h2>
+<table class="data">
+<tr><td><b>LLM</b></td><td>Understands the request and generates the response.</td></tr>
+<tr><td><b>MCP</b></td><td>Standard protocol for connecting AI applications with tools.</td></tr>
+<tr><td><b>MCP Client</b></td><td>Connects the chatbot application to the MCP server.</td></tr>
+<tr><td><b>MCP Server</b></td><td>Provides the knowledge-base tools.</td></tr>
+<tr><td><b>Tools</b></td><td>Perform specific operations (search, read, reindex).</td></tr>
+<tr><td><b>TF-IDF + Cosine Similarity</b></td><td>Finds relevant notes.</td></tr>
+<tr><td><b>Markdown Files</b></td><td>The knowledge source.</td></tr>
+<tr><td><b>Gradio</b></td><td>The user interface.</td></tr>
+<tr><td><b>OpenRouter</b></td><td>The LLM API gateway used by this implementation.</td></tr>
+</table>
+
+<p class="footer-note">MCP-Based Personal Knowledge Base Chatbot — Classroom Teaching Guide</p>
+</div>
+
+</body>
+</html>
